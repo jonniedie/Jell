@@ -1,7 +1,7 @@
 module JellTerminal
 
 using Crayons: Crayon, CrayonWrapper, Box
-using JellBase
+using Jell
 using REPL
 using REPL.TerminalMenus
 using REPL.Terminals
@@ -67,7 +67,7 @@ function slow_print(crayon::Crayon, cw::CrayonWrapper; kwargs...)
     print(crayon, cw)
 end
 
-function JellBase.show_dialogue(c::Character, player_choice::PlayerChoice)
+function Jell.show_dialogue(c::Character, player_choice::PlayerChoice)
     println()
     printstyled(c.name; c.color)
     println(": ")
@@ -76,7 +76,7 @@ function JellBase.show_dialogue(c::Character, player_choice::PlayerChoice)
     choice = request(RadioMenu(choices; scroll_wrap = true, cursor = '▷'))
     return results[choice]()
 end
-function JellBase.show_dialogue(c::Character, s)
+function Jell.show_dialogue(c::Character, s)
     println()
     printstyled(c.name; c.color)
     print(": ")
@@ -84,7 +84,7 @@ function JellBase.show_dialogue(c::Character, s)
     request_continue()
     return nothing
 end
-function JellBase.show_dialogue(c::Narrator, s)
+function Jell.show_dialogue(c::Narrator, s)
     println()
     slow_print(s; color = :italic)
     request_continue()

@@ -1,4 +1,4 @@
-module JellBase
+module Jell
 
 using FunctionWrappers: FunctionWrapper
 using MacroTools: postwalk
@@ -31,6 +31,8 @@ macro choose(things)
                     nothing
                 end
             )
+        elseif thing isa String
+            thing = :($thing => Returns(nothing))
         end
         thing
     end

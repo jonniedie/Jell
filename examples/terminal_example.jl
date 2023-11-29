@@ -28,9 +28,9 @@ alice: @choose [
         lets_eat() end
     "I'm hungry. Let's eat." => lets_eat()
     "I'm not really that hungry." => begin
-        bob: DEFAULT_FG("Why would you even ", ITALICS*BOLD("say"), " that?")
-        bob: "Seriously though. I never said anything about eating."
+        bob: "Why would you even say that?"
         alice: "..."
+        bob: "Seriously though. I never said anything about eating."
         bob: "..."
         alice: "..."
         narrator: "..." end
