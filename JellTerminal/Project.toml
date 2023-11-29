@@ -1,0 +1,9 @@
+name = "JellTerminal"
+uuid = "b6006ca4-3df4-4956-8cdf-c38eb7d3ae38"
+authors = ["Jonnie Diegelman <jonniediegelman@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+Crayons = "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
+JellBase = "10591176-eb56-4de0-9a70-ea7503db5979"
+REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
