@@ -22,21 +22,27 @@ function PlayerChoice(choices::Vector{Pair{<:AbstractString, <:Function}})
 end
 
 macro choose(things)
+    @assert things isa Expr && things.head == :vcat
     things = postwalk(things) do thing
         if thing isa Expr && thing.head == :call && thing.args[1] == :(=>)
-            thing.args[2] = :(String($(esc(thing.args[2]))))
+            thing.args[2] = :(String($(thing.args[2])))
             thing.args[3] = :(
                 function ()
-                    $(esc(thing.args[3]))
+                    $(thing.args[3])
                     nothing
                 end
             )
-        elseif thing isa String
+        end
+        thing
+    end
+    things = map(things.args) do thing
+        if thing isa String
             thing = :($thing => Returns(nothing))
         end
         thing
     end
-    return :(PlayerChoice($things))
+    things = Expr(:vcat, things...)
+    return esc(:(PlayerChoice($things)))
 end
 
 abstract type AbstractCharacter end
