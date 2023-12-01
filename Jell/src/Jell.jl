@@ -8,9 +8,10 @@ export @choose, AbstractCharacter, PlayerChoice, show_dialogue
 struct PlayerChoice
     choice_pairs::Vector{Pair{String, FunctionWrapper{Nothing, Tuple{}}}}
 end
-function PlayerChoice(choices::Vector{Pair{<:AbstractString, <:Function}})
+function PlayerChoice(choices::Vector)
+    filter!(choice -> choice isa Pair{<:AbstractString, <:Function}, choices)
     # In case the inputs aren't wrapped in a FunctionWrapper already
-    return map(choices) do choice
+    choices = map(choices) do choice
         str, fn = choice
         # We need to make sure the function actually returns nothing
         fn_nothing = function ()
@@ -19,19 +20,23 @@ function PlayerChoice(choices::Vector{Pair{<:AbstractString, <:Function}})
         end
         String(str) => FunctionWrapper{Nothing, Tuple{}}(fn_nothing)
     end
+    return PlayerChoice(choices)
 end
 
 macro choose(things)
     @assert things isa Expr && things.head == :vcat
-    things = postwalk(things) do thing
+    things = prewalk(things) do thing
         if thing isa Expr && thing.head == :call && thing.args[1] == :(=>)
-            thing.args[2] = :(String($(thing.args[2])))
-            thing.args[3] = :(
-                function ()
-                    $(thing.args[3])
-                    nothing
-                end
-            )
+            thing.args[2] = :($(thing.args[2]))
+            f = thing.args[3]
+            if !(f isa Expr && f.head == :function)
+                thing.args[3] = :(
+                    function ()
+                        $(thing.args[3])
+                        nothing
+                    end
+                )
+            end
         end
         thing
     end
@@ -42,7 +47,7 @@ macro choose(things)
         thing
     end
     things = Expr(:vcat, things...)
-    return esc(:(PlayerChoice($things)))
+    return :(PlayerChoice($(esc(things))))
 end
 
 abstract type AbstractCharacter end
