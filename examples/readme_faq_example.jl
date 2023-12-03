@@ -84,7 +84,6 @@ another_named_scene() = begin
 end
 
 Q: "What if I really want to call a named block that hasn't been defined yet?"
-
 scene_that_holds_scenes() = begin
     what_about_this_time()
 
@@ -95,7 +94,8 @@ scene_that_holds_scenes() = begin
         Q: """What if I just wrap my entire script in a `main() = begin ... end
             block?"""
         A: """If this is behavior you're going to want, that's probably a good
-            idea. The only downside is that you won't be able to step through your code line-by-line in the Julia REPL."""
+            idea. The only downside is that you won't be able to step through your code
+            line-by-line in the Julia REPL."""
         Q: @choose begin
             "That's fine. I don't even know what that is." => A: "Fair enough."
             "Ah bummer." => nothing
@@ -104,16 +104,41 @@ scene_that_holds_scenes() = begin
 end
 scene_that_holds_scenes()
 
+Q: """I often want to write a choice branch that returns back to itself. How can I do
+    that?"""
+A: """Make the choice a named scene and call back to it within the scene. Don't forget
+    to call the named scene after creating it so it actually runs."""
+returning_scene() = begin
+    A: @choose begin
+        "Like this." => returning_scene()
+        "Just make sure there's an exit." => nothing
+    end
+end
+returning_scene()
+
+Q: "These 'named scenes' look and act an awful lot like function definitions."
+A: "Shhhh. Don't tell anybody."
+Q: """Why not just use the normal Julia `function your_function() ... end` syntax
+    instead of `your_function() = begin ... end`?"""
+A: """Because I don't really want this to read as code. Someone who just wants to write
+    a branching narrative shouldn't have to know or care what a function is. Plus the
+    `your_function() = begin ... end` makes it a lot easier to visually scan down the
+    beginning of each line of the script to see where named scenes are defined."""
+
 Q: "Why isn't this written Python?"
 A: "Because I didn't want to write it in Python."
 Q: "But I don't want to use anything that isn't Python."
-A: "Okay."
+A: "How did you make it this far, then?"
+Q: "Like, in this document, or in life?"
+A: "..."
 
 Q: """If this is an interactive FAQ, shouldn't all of the `@choose`s be on my
     dialog, not yours? And shouldn't the choices be questions I want to ask?"""
 A: @choose begin
-    "Well... yes but, like, I wanted it this way." => nothing
-    "Shhhhh" => nothing
+    "Well... yes but, like, this seemed more natural as I was writing it." => nothing
+    """I mean, none of this really makes sense as an interactive FAQ, though. Much of
+        the important information isn't actually in the dialog and would therefore not
+        get printed while running this.""" => nothing
 end
 
 Q: "Why'd you choose the name 'Jell'?"

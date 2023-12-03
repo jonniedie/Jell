@@ -5,7 +5,7 @@ A malleable narrative scripting language for building interactive stories and ga
 ### What sets Jell apart?
 Most narrative scripting languages contain a small set of programming constructs (variables, conditional statements, jumps/gotos) to allow some additional user control. Jell takes user configurability to the extreme by embedding itself in a full, feature-rich programming language (Julia!). Every Jell script is valid Julia code. All valid Julia code can be inserted in a Jell script.
 
-Also unlike most narrative scripting languages, Jell evaluates eagerly line-by-line instead of building up an abstract syntax tree for later evaluation. This is useful in combination with the Julia REPL, as you can manually step through and evaluate sections of your script.
+Also unlike most narrative scripting languages, Jell evaluates eagerly line-by-line instead of building up an abstract syntax tree for later evaluation. This is useful in combination with the Julia REPL, as you can manually step through and evaluate sections of your script. User choice branches of course aren't executed eagerly, but we use closures for the lazy evaluation instead of `eval`ing the AST.
 
 ### Jell's design philosophy
 - **Write naturally**. Just because your script needs to be read by a computer doesn't mean it needs to look like code. Jell syntax matches pretty closely to how you'd naturally write a script.
@@ -133,16 +133,29 @@ returning_scene() = begin
 end
 returning_scene()
 
+Q: "These 'named scenes' look and act an awful lot like function definitions."
+A: "Shhhh. Don't tell anybody."
+Q: """Why not just use the normal Julia `function your_function() ... end` syntax
+    instead of `your_function() = begin ... end`?"""
+A: """Because I don't really want this to read as code. Someone who just wants to write
+    a branching narrative shouldn't have to know or care what a function is. Plus the
+    `your_function() = begin ... end` makes it a lot easier to visually scan down the
+    beginning of each line of the script to see where named scenes are defined."""
+
 Q: "Why isn't this written Python?"
 A: "Because I didn't want to write it in Python."
 Q: "But I don't want to use anything that isn't Python."
-A: "Okay."
+A: "How did you make it this far, then?"
+Q: "Like, in this document, or in life?"
+A: "..."
 
 Q: """If this is an interactive FAQ, shouldn't all of the `@choose`s be on my
     dialog, not yours? And shouldn't the choices be questions I want to ask?"""
 A: @choose begin
-    "Well... yes but, like, I wanted it this way." => nothing
-    "Shhhhh" => nothing
+    "Well... yes but, like, this seemed more natural as I was writing it." => nothing
+    """I mean, none of this really makes sense as an interactive FAQ, though. Much of
+        the important information isn't actually in the dialog and would therefore not
+        get printed while running this.""" => nothing
 end
 
 Q: "Why'd you choose the name 'Jell'?"
