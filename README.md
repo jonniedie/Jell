@@ -5,41 +5,43 @@ A malleable narrative scripting language for building interactive stories and ga
 ### What sets Jell apart?
 Most narrative scripting languages contain a small set of programming constructs (variables, conditional statements, jumps/gotos) to allow some additional user control. Jell takes user configurability to the extreme by embedding itself in a full, feature-rich programming language (Julia!). Every Jell script is valid Julia code. All valid Julia code can be inserted in a Jell script.
 
+Also unlike most narrative scripting languages, Jell evaluates eagerly line-by-line instead of building up an abstract syntax tree for later evaluation. This is useful in combination with the Julia REPL, as you can manually step through and evaluate sections of your script.
+
 ### Jell's design philosophy
 - **Write naturally**. Just because your script needs to be read by a computer doesn't mean it needs to look like code. Jell syntax matches pretty closely to how you'd naturally write a script.
 - **Mold it to your use**. It's intimidating to start using a new tool not knowing whether it's missing features you might later need. If you start a project with Jell, you can rest easy knowing that any missing features can be easily tacked on in the future.
+- **Borrow liberally, give freely**. The first working implementation of Jell was written in less than an hour because it was built on top of the work of other open-source authors who did all of the hard work. The Julia comminity hosts a wealth of free, open-source packages that can–and should!–be used to extend functionality in your Jell project. And if you write something that you think other people might find useful, slap on an open-source license and tell others about it!
 - **Use anywhere**. While Jell can run as a standalone narrative engine (via JellTerminal), it can also be used in other game engines. Jell scripts can call compiled C functions and can themselves be compiled into C code and included in any project.
 
 ### FAQ
 ```julia
 # Bring the tools we need into scope
-using JellTerminal
+using Jell
 
 # Define some characters
-Q = Character(name="Questioner")
-A = Character(name="Answerer")
+Q = BasicCharacter(name="Q", color=:light_blue)
+A = BasicCharacter(name="A", color=:light_magenta)
 
 # FAQ
 Q: "What does the language look like?"
 A: "You're lookin' at it, bud."
 
 Q: "How do I implement player choice for branching narratives?"
-A: @choose [
+A: @choose begin
     "Like this." => begin
         Q: "The code just had a weird `begin` thing. What's that about?"
         A: "It delimits a block of multiple lines to run."
         Q: "So I'm guessing there's going to be an `end` to close it out?"
         A: "Yup."
-        end
+    end
     "Who knows, man." => Q: "I was hoping you did."
-    ]
+end
 
 Q: "In that last example, how would one write an option that did nothing if chosen?"
-A: "There are two ways of doing it, but my favorite is to..."
-A: @choose [
-    "...put a `nothing` after the arrow thing." => nothing
-    "...omit the arrow thing altogether."
-    ]
+A: @choose begin
+    "Put a `nothing` after the arrow thing." => nothing
+    "Put an empty `begin end` block after the arrow thing." => begin end
+end
 
 Q: "Are conditional statements supported?"
 if iseven(2)
@@ -58,7 +60,7 @@ A:  if iseven(2)
         "Still no. And the math is still broken."
     end
 Q: "Is there a... less bulky way to do that?"
-A: iseven(2) ? "Yep." : "Nope."
+A: (iseven(2) ? "Yep." : "Nope.")
 
 Q: "What about variables? Can I define and use variables?"
 some_variable = "Yes"
@@ -70,17 +72,16 @@ A: "First we'd have to define the block of lines we want to reuse..."
 named_scene() = begin
     A: "This line will be run as soon as someone calls back to `named_scene`."
     Q: "Can `named_scene`... call itself?"
-    A: @choose [
+    A: @choose begin
         "I don't know, let's find out." => named_scene()
         "C'mon. We already broke a math." => begin
-            Q: @choose [
+            Q: @choose begin
                 "I fear nothing." => named_scene()
-                "Yeah, you're right."
-                ]
-            A: "Good thinking."
+                "Yeah, you're right." => A: "Good thinking."
             end
-        ]
+        end
     end
+end
     
 A: "...then we'd have to call back to it."
 named_scene()
@@ -97,19 +98,41 @@ another_named_scene() = begin
     A: "No, it didn't. Scenes have to be defined before they're called"
     Q: "Then how are we here?"
     A: "We may have just broken a different math."
+end
+
+Q: "What if I really want to call a named block that hasn't been defined yet?"
+begin
+what_about_this_time()
+
+what_about_this_time() = begin
+    A: "You can if both the call site and the definition are wrapped in a `begin ... end` block"
+    Q: "What if I just wrap my entire script in a `begin ... end` block?"
+    A: "If this is behavior you're going to want, that's probably a good idea. The only downside is that you won't be able to step through your code line-by-line in the Julia REPL."
+    Q: @choose begin
+        "That's fine. I don't even know what that is." => A: "Fair enough."
+        "Ah bummer." => nothing
     end
+end
+end
 
 Q: "Why isn't this written Python?"
 A: "Because I didn't want to write it in Python."
 Q: "But I don't want to use anything that isn't Python."
 A: "Okay."
 
+Q: """If this is an interactive FAQ, shouldn't all of the `@choose`s be on my
+    dialog, not yours? And shouldn't the choices be questions I want to ask?"""
+A: @choose begin
+    "Well... yes but, like, I wanted it this way." => nothing
+    "Shhhhh" => nothing
+end
+
 Q: "Why'd you choose the name 'Jell'?"
-A: @choose [
-    "I wanted Julia's (thereby, Jell's) `.jl` file extension to make sense."
+A: @choose begin
+    "I wanted Julia's (thereby, Jell's) `.jl` file extension to make sense." => nothing
     """Because I wanted people to think of it less as a rigid structure that
         they have to fit their story around and more like a malleable substance
-        that can be shaped to their needs."""
+        that can be shaped to their needs.""" => nothing
     """Because I was writing a game/story that takes place in an alternate
         history where computers are built from gooey, biological substances
         (hence, Jell) and can be trained to match desired input/output behavior
@@ -117,15 +140,15 @@ A: @choose [
         logic. Basically, what would computing look like if we had started from
         the point of modern machine learning? What does scalability mean when
         your hardware can grow by itself?""" => begin
-        Q: @choose [
+        Q: @choose begin
             "That sounds weird." => A: "Hopefully!"
             "Huh, that sounds interesting." => begin
                 A: """Thanks! It's also about unsustainable corporate growth
                     and consolidation and, like, people and society and..."""
                 Q: "Honestly, I was just trying to be polite."
                 A: "Oh."
-                end
-            ]
+            end
+        end
         Q: "So couldn't you have used an existing tool for that?"
         A: """I probably could have. But there was a lot of custom stuff around
                 skill checks that I wanted to be written alongside the
@@ -133,8 +156,8 @@ A: @choose [
                 could find. I felt like I was going to have to bend my ideas to
                 fit the tools rather than using the tools to fit to my
                 ideas."""
-        end
-    ]
+    end
+end
 
 Q: "You've used triple quotes in the code a few times. What's that about?"
 A: """Triple quotes are like single quotes, except you can make a new line and
@@ -149,10 +172,10 @@ infinite_loop_baby!() = begin
     A: "Actually math is pretty good at infinity."
     Q: "I'm tired. I've had a long day."
     infinite_loop_baby!()
-    end
+end
 
-A: @choice [
+A: @choose begin
     "You think that's long?" => infinite_loop_baby!()
     "I thought about doing something right there, but nevermind."
-    ]
+end
 ```
