@@ -112,7 +112,8 @@ scene_that_holds_scenes() = begin
         Q: """What if I just wrap my entire script in a `main() = begin ... end
             block?"""
         A: """If this is behavior you're going to want, that's probably a good
-            idea. The only downside is that you won't be able to step through your code line-by-line in the Julia REPL."""
+            idea. The only downside is that you won't be able to step through your code
+            line-by-line in the Julia REPL."""
         Q: @choose begin
             "That's fine. I don't even know what that is." => A: "Fair enough."
             "Ah bummer." => nothing
