@@ -1,20 +1,3 @@
-# Jell
-
-A malleable narrative scripting language for building interactive stories and games.
-
-### What sets Jell apart?
-Most narrative scripting languages contain a small set of programming constructs (variables, conditional statements, jumps/gotos) to allow some additional user control. Jell takes user configurability to the extreme by embedding itself in a full, feature-rich programming language (Julia!). Every Jell script is valid Julia code. All valid Julia code can be inserted in a Jell script.
-
-Also unlike most narrative scripting languages, Jell evaluates eagerly line-by-line instead of building up an abstract syntax tree for later evaluation. This is useful in combination with the Julia REPL, as you can manually step through and evaluate sections of your script.
-
-### Jell's design philosophy
-- **Write naturally**. Just because your script needs to be read by a computer doesn't mean it needs to look like code. Jell syntax matches pretty closely to how you'd naturally write a script.
-- **Mold it to your use**. It's intimidating to start using a new tool not knowing whether it's missing features you might later need. If you start a project with Jell, you can rest easy knowing that any missing features can be easily tacked on in the future.
-- **Borrow liberally, give freely**. The first working implementation of Jell was written in less than an hour because it was built on top of the work of other open-source authors who did all of the hard work. The Julia comminity hosts a wealth of free, open-source packages that can–and should!–be used to extend functionality in your Jell project. And if you write something that you think other people might find useful, slap on an open-source license and tell others about it!
-- **Use anywhere**. While Jell can run as a standalone narrative engine (via JellTerminal), it can also be used in other game engines. Jell scripts can call compiled C functions and can themselves be compiled into C code and included in any project.
-
-### FAQ
-```julia
 # Bring the tools we need into scope
 using Jell
 
@@ -184,4 +167,3 @@ A: @choose begin
     "You think that's long?" => infinite_loop_baby!()
     "I thought about doing something right there, but nevermind."
 end
-```
