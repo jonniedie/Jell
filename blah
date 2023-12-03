@@ -1,9 +1,0 @@
-Accounting Room
-    Accountant1     { }
-    Intern          { Accountant1 }
-    Accountant2     { Intern }
-    Janitor         { Intern }
-    Boss            { Janitor || Accountant2 }
---> Assistant       { Boss }
-
-R & D Lab
