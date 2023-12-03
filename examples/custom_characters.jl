@@ -22,7 +22,7 @@ end
 
 # Declare the characters
 alice = Character(name="Alice", name_style=:yellow)
-bob = Character(name="Bob", name_style=:light_magenta)
+bob = Character(name="Bob", name_style=:blue)
 
 # Run the script
 alice: "Hey Bob. I wanted to try something."
