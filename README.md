@@ -101,7 +101,6 @@ another_named_scene() = begin
 end
 
 Q: "What if I really want to call a named block that hasn't been defined yet?"
-
 scene_that_holds_scenes() = begin
     what_about_this_time()
 
@@ -121,6 +120,18 @@ scene_that_holds_scenes() = begin
     end
 end
 scene_that_holds_scenes()
+
+Q: """I often want to write a choice branch that returns back to itself. How can I do
+    that?"""
+A: """Make the choice a named scene and call back to it within the scene. Don't forget
+    to call the named scene after creating it so it actually runs."""
+returning_scene() = begin
+    A: @choose begin
+        "Like this." => returning_scene()
+        "Just make sure there's an exit." => nothing
+    end
+end
+returning_scene()
 
 Q: "Why isn't this written Python?"
 A: "Because I didn't want to write it in Python."
