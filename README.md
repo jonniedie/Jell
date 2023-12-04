@@ -13,16 +13,68 @@ Also unlike most narrative scripting languages, Jell evaluates eagerly line-by-l
 - **Borrow liberally, give freely**. The first working implementation of Jell was written in less than an hour because it was built on top of the work of other open-source authors who did all of the hard work. The Julia comminity hosts a wealth of free, open-source packages that can–and should!–be used to extend functionality in your Jell project. And if you write something that you think other people might find useful, slap on an open-source license and tell others about it!
 - **Use anywhere**. While Jell can run as a standalone narrative engine (via JellTerminal), it can also be used in other game engines. Jell scripts can call compiled C functions and can themselves be compiled into C code and included in any project.
 
-### FAQ
+## Installation
+1. Install [juliaup](https://github.com/JuliaLang/juliaup). This will install the Julia language and set it up for your machine. Alternatively, you can [download Julia directly](https://julialang.org/downloads/) and set things up manually.
+2. Add Jell to your project environment.
+    1. Open a terminal in the top-level folder of your project (can be any type of project, even an empty folder) and enter the command `julia` to start a Julia REPL session.
+    2. Enter into Pkg mode of the REPL by typing `]`. You should see the `julia>` prompt change to `(@1.xx) pkg>`.
+    3. Activate the project environment by entering `activate .` (note the `.`). You should see the prompt change to the folder name.
+    4. Enter `add https://github.com/jonniedie/Jell`
+
+## Usage
+### Writing Jell Scripts
+Jell scripts have the file extension `.jl` and consist of three sections:
+1. Package import statements. For simple, standalone projects, this will probably just be the single line
+    ```julia
+    using Jell
+    ```
+2. Character definition. For complex projects, you'll likely want to define your own custom character type, but for simple projects (such as those that just print to the terminal), you can use the exported `BasicCharacter` and `BasicNarrator` types.
+    ```julia
+    tony = BasicCharacter(name="Tony the Talker")
+    ```
+3. Script. Basic dialog in scripts is entered naturally like:
+    ```julia
+    tony: "Hey, I'm talkin' here."
+    ```
+For more complex things like branching dialog, see the FAQ below.
+
+### Defining Custom Character Types
+`BasicCharacter` is useful for prototyping, but you'll probably want more functionality than just terminal printing. For this, you can make a type that subtypes `AbstractCharacter` and extend methods for any of the following functions:
 ```julia
-# Bring the tools we need into scope
+show_dialogue(character::YourCharacterType, dialog::String) :: Nothing
+
+request_choice(character::YourCharacterType, choices::Vector{String}) :: Int
+
+dialogue_style(character::YourCharacterType) :: Symbol
+
+nameof(character::YourCharacterType) :: String
+
+name_style(character::YourCharacterType) :: Symbol
+
+should_show_name(character::YourCharacterType) :: Bool
+```
+For the details of each function, read [the docstrings](src/character_interface.jl). For a worked example, see [this one](examples/custom_characters.jl).
+
+### Running Jell Scripts in the Terminal
+To run a Jell script all at once, open a terminal at your project folder and enter the command
+```
+julia --project=. path/to/your/script.jl
+```
+You can also open a persistant Julia REPL session with `julia --project=.` so you can run individual or groups of lines without having to run the whole script.
+
+### Using Jell Scripts in a Game Engine
+Big TODO on documenting this one.
+
+## FAQ
+```julia
+# 1. Package import statements
 using Jell
 
-# Define some characters
+# 2. Character definition
 Q = BasicCharacter(name="Q", color=:light_blue)
 A = BasicCharacter(name="A", color=:light_magenta)
 
-# FAQ
+# 3. Script
 Q: "What does the language look like?"
 A: "You're lookin' at it, bud."
 

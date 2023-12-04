@@ -6,24 +6,25 @@ using SpelledOut
 
 # Define a new custom character type. For this example, the character we want
 # to keep track of the word count of the character.
-@kwdef mutable struct Character <: AbstractCharacter
+@kwdef mutable struct CustomCharacter <: AbstractCharacter
     name::String
     word_count::Int = 0
     name_style::Symbol = :default
 end
 
-Jell.nameof(c::Character) = c.name
+# Overload these functions to define how CustomCharacters work
+Jell.nameof(c::CustomCharacter) = c.name
 
-Jell.name_style(c::Character) = c.name_style
+Jell.name_style(c::CustomCharacter) = c.name_style
 
-function Jell.show_dialogue(c::Character, str)
+function Jell.show_dialogue(c::CustomCharacter, str)
     c.word_count += length(split(str, ' '))
     print_dialogue_to_terminal(c, str; time_delay = 0.01)
 end
 
 # Declare the characters
-alice = Character(name="Alice", name_style=:yellow)
-bob = Character(name="Bob", name_style=:blue)
+alice = CustomCharacter(name="Alice", name_style=:yellow)
+bob = CustomCharacter(name="Bob", name_style=:blue)
 
 # Run the script
 alice: "Hey, I wanted to try something."
