@@ -11,7 +11,7 @@ Also unlike most narrative scripting languages, Jell evaluates eagerly line-by-l
 - **Write naturally**. Just because your script needs to be read by a computer doesn't mean it needs to look like code. Jell syntax matches pretty closely to how you'd naturally write a script.
 - **Mold it to your use**. It's intimidating to start using a new tool not knowing whether it's missing features you might later need. If you start a project with Jell, you can rest easy knowing that any missing features can be easily tacked on in the future.
 - **Borrow liberally, give freely**. The first working implementation of Jell was written in less than an hour because it was built on top of the work of other open-source authors who did all of the hard work. The Julia comminity hosts a wealth of free, open-source packages that can–and should!–be used to extend functionality in your Jell project. And if you write something that you think other people might find useful, slap on an open-source license and tell others about it!
-- **Use anywhere**. While Jell can run as a standalone narrative engine (via JellTerminal), it can also be used in other game engines. Jell scripts can call compiled C functions and can themselves be compiled into C code and included in any project.
+- **Use anywhere**. While Jell can run as a standalone narrative engine, it can also be used in other game engines.
 
 ## Installation
 1. Install [juliaup](https://github.com/JuliaLang/juliaup). This will install the Julia language and set it up for your machine. Alternatively, you can [download Julia directly](https://julialang.org/downloads/) and set things up manually.
