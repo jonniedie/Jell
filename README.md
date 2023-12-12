@@ -221,8 +221,7 @@ A: @choose begin
         (hence, Jell) and can be trained to match desired input/output behavior
         rather than being built from silicon and programmed with discrete
         logic. Basically, what would computing look like if we had started from
-        the point of modern machine learning? What does scalability mean when
-        your hardware can grow by itself?""" => begin
+        the point of modern machine learning?""" => begin
         Q: @choose begin
             "That sounds weird." => A: "Hopefully!"
             "Huh, that sounds interesting." => begin
